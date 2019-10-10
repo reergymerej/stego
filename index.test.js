@@ -28,3 +28,27 @@ describe('splitOctetIntoPairs', () => {
     expect(mod.splitOctetIntoPairs(input)).toEqual(output)
   })
 })
+
+describe('hideOctet', () => {
+  it('should throw if the container is not large enough', () => {
+    expect(() => {
+      const container = Buffer.from([0, 0, 0])
+      mod.hideOctet(255, container)
+    }).toThrow('container')
+  })
+
+  it.each`
+    octet | container | expected
+    ${1} | ${[0, 0, 0, 0]}, ${[0, 0, 0, 1]}
+    ${2} | ${[0, 0, 0, 0]}, ${[0, 0, 0, 2]}
+    ${1} | ${[0, 0, 0, 1]}, ${[0, 0, 0, 2]}
+    ${255} | ${[0, 0, 0, 0]}, ${[3, 3, 3, 3]}
+    ${1} | ${[255, 255, 255, 255]}, ${[255, 255, 255, 0]}
+    ${1 + 4 + 16 + 64} | ${[255, 255, 255, 255]}, ${[0, 0, 0, 0]}
+    ${2 + 8 + 32 + 128} | ${[255, 255, 255, 255]}, ${[1, 1, 1, 1]}
+    ${255} | ${[255, 255, 255, 255]}, ${[2, 2, 2, 2]}
+  `('hide $octet in $container -> $expected', ({ octet, container, expected }) => {
+    const result = mod.hideOctet(octet, Buffer.from(container))
+    expect(result).toEqual(Buffer.from(expected))
+  })
+})

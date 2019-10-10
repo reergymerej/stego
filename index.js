@@ -63,6 +63,18 @@ const splitOctetIntoPairs = (octet) => {
   ).reverse()
 }
 
+const hideOctet = (octet, container) => {
+  if (container.length < 4) {
+    throw new Error('container not large enough to hide octet')
+  }
+  return splitOctetIntoPairs(octet)
+    .reduce((buffer, value, i) => {
+      buffer[i] = buffer[i] + value
+      return buffer
+    }, Buffer.from(container))
+}
+
 module.exports = {
   splitOctetIntoPairs,
+  hideOctet,
 }
