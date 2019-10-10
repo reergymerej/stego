@@ -39,14 +39,14 @@ describe('hideOctet', () => {
 
   it.each`
     octet | container | expected
+    ${1} | ${[0, 0, 0, 255]}, ${[0, 0, 0, 255 - 3 + 1]}
     ${1} | ${[0, 0, 0, 0]}, ${[0, 0, 0, 1]}
     ${2} | ${[0, 0, 0, 0]}, ${[0, 0, 0, 2]}
-    ${1} | ${[0, 0, 0, 1]}, ${[0, 0, 0, 2]}
-    ${255} | ${[0, 0, 0, 0]}, ${[3, 3, 3, 3]}
-    ${1} | ${[255, 255, 255, 255]}, ${[255, 255, 255, 0]}
-    ${1 + 4 + 16 + 64} | ${[255, 255, 255, 255]}, ${[0, 0, 0, 0]}
-    ${2 + 8 + 32 + 128} | ${[255, 255, 255, 255]}, ${[1, 1, 1, 1]}
-    ${255} | ${[255, 255, 255, 255]}, ${[2, 2, 2, 2]}
+    ${1} | ${[0, 0, 0, 1]}, ${[0, 0, 0, 1]}
+    ${4} | ${[0, 0, 0, 0]}, ${[0, 0, 1, 0]}
+    ${2 + 8 + 32 + 128} | ${[0, 0, 0, 0]}, ${[2, 2, 2, 2]}
+    ${2 + 8 + 32 + 128} | ${[255, 255, 255, 255]}, ${[255 - 3 + 2, 255 - 3 + 2, 255 - 3 + 2, 255 - 3 + 2]}
+    ${255} | ${[255, 255, 255, 255]}, ${[255, 255, 255, 255]}
   `('hide $octet in $container -> $expected', ({ octet, container, expected }) => {
     const result = mod.hideOctet(octet, Buffer.from(container))
     expect(result).toEqual(Buffer.from(expected))
@@ -110,7 +110,7 @@ describe('hideBuffer', () => {
         // expected
         Buffer.from([
           0,0,0,0,
-          0,0,0,0,
+          0,0,0,255 - 3 + 1,
         ]),
       ],
       [
@@ -122,18 +122,82 @@ describe('hideBuffer', () => {
         // container
         Buffer.from([
           0,0,0,0,
-          0,0,0,255,
+          0,0,0,255, // 11 11 11 11
         ]),
         // expected
         Buffer.from([
           1,2,1,0,
+          0,0,0,255 - 3 + 1, // 11 11 11 01
+        ]),
+      ],
+      [
+        // message
+        Buffer.from([
+          1,
+        ]),
+        // container
+        Buffer.from([
+          0,0,0,0,
+          0,0,0,0,
+        ]),
+        // expected
+        Buffer.from([
+          0,0,0,1,
           0,0,0,0,
         ]),
       ],
     ]
   )('should hide a buffer within another', (message, container, expected) => {
-    expect(mod.hideBuffer(message,
-      container || Buffer.alloc(message.length * 4)
-    )).toEqual(expected)
+    const hiddenIn = container || Buffer.alloc(message.length * 4)
+    const result = mod.hideBuffer(message, hiddenIn)
+    expect(result).toEqual(expected)
+    expect(result.length).toEqual(hiddenIn.length)
+  })
+})
+
+describe('getValueFromOctetPairs', () => {
+  it('should ', () => {
+    // 01 11 00 01
+    // 64 32 16 1
+    expect(mod.getValueFromOctetPairs([1,3,0,1])).toBe(64 + 32 + 16 + 1)
+  })
+})
+
+describe('integration', () => {
+  it.each(
+    [
+      [
+        'a', // message
+        null, // container
+      ],
+
+      [
+        'a', // message
+        Buffer.from('hello'), // container
+      ],
+
+      [
+        '🤔', // message
+        null,
+      ],
+
+      [
+        'I have a knife! 🤔', // message
+        null,
+      ],
+
+      [
+        'I have a knife! 🤔', // message
+        Buffer.from('asfd asdf asdf qwer qwer qwer asdf asdf asdf zxcv xcv xcvb xcvb xcvb sdf gsdfg sdfg '),
+      ],
+    ]
+  )('should hide/retrieve a message', (message, container) => {
+    const messageBuffer = Buffer.from(message)
+    const hidden = mod.hideBuffer(messageBuffer, container)
+
+    const plucked = mod.pluck(hidden)
+    const fromPlucked = mod.bufferFromPlucked(plucked)
+    expect(fromPlucked.toString()).toContain(message)
+    // expect(fromPlucked.toString()).toEqual(message)
   })
 })
