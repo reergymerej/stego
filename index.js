@@ -74,7 +74,18 @@ const hideOctet = (octet, container) => {
     }, Buffer.from(container))
 }
 
+// return list of octets pulled from last 2 bits of each octet in buffer
+const pluck = (buffer) => {
+  const result = []
+  for (const octet of buffer) {
+    const [,,,last] = splitOctetIntoPairs(octet)
+    result.push(last)
+  }
+  return result
+}
+
 module.exports = {
-  splitOctetIntoPairs,
   hideOctet,
+  pluck,
+  splitOctetIntoPairs,
 }

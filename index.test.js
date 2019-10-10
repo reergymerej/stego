@@ -52,3 +52,15 @@ describe('hideOctet', () => {
     expect(result).toEqual(Buffer.from(expected))
   })
 })
+
+describe('pluck', () => {
+  it.each`
+    input | expected
+    ${[0, 0, 1, 0]} | ${[0, 0, 1, 0]}
+    ${[0, 0, 0, 1]} | ${[0, 0, 0, 1]}
+    ${[0, 0, 0, 3]} | ${[0, 0, 0, 3]}
+    ${[0, 0, 0, 4]} | ${[0, 0, 0, 0]}
+  `('should pull $expected from $input', ({ input, expected }) => {
+    expect(mod.pluck(Buffer.from(input))).toEqual(expected)
+  })
+})
