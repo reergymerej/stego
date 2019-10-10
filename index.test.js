@@ -64,3 +64,76 @@ describe('pluck', () => {
     expect(mod.pluck(Buffer.from(input))).toEqual(expected)
   })
 })
+
+describe('hideBuffer', () => {
+  it.each(
+    [
+      [
+        // message
+        Buffer.from([
+          0,
+          1,
+        ]),
+        // container
+        null,
+        // expected
+        Buffer.from([
+          0,0,0,0,
+          0,0,0,1,
+        ]),
+      ],
+      [
+        // message
+        Buffer.from([
+          255,
+          1,
+        ]),
+        // container
+        null,
+        // expected
+        Buffer.from([
+          3,3,3,3,
+          0,0,0,1,
+        ]),
+      ],
+      [
+        // message
+        Buffer.from([
+          0,
+          1,
+        ]),
+        // container
+        Buffer.from([
+          0,0,0,0,
+          0,0,0,255,
+        ]),
+        // expected
+        Buffer.from([
+          0,0,0,0,
+          0,0,0,0,
+        ]),
+      ],
+      [
+        // message
+        Buffer.from([
+          100,
+          1,
+        ]),
+        // container
+        Buffer.from([
+          0,0,0,0,
+          0,0,0,255,
+        ]),
+        // expected
+        Buffer.from([
+          1,2,1,0,
+          0,0,0,0,
+        ]),
+      ],
+    ]
+  )('should hide a buffer within another', (message, container, expected) => {
+    expect(mod.hideBuffer(message,
+      container || Buffer.alloc(message.length * 4)
+    )).toEqual(expected)
+  })
+})

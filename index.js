@@ -84,7 +84,20 @@ const pluck = (buffer) => {
   return result
 }
 
+const hideBuffer = (message, container) => {
+  const slices = []
+  const sliceLength = 4
+  for (const [i, octet] of message.entries()) {
+    const sliceIndex = i * sliceLength
+    const containerSlice = container.slice(sliceIndex, sliceIndex + sliceLength)
+    const sliceWithHidden = hideOctet(octet, containerSlice)
+    slices.push(sliceWithHidden)
+  }
+  return Buffer.concat(slices)
+}
+
 module.exports = {
+  hideBuffer,
   hideOctet,
   pluck,
   splitOctetIntoPairs,
