@@ -57,30 +57,11 @@ const intToBinary = (int) => binaryPad(int.toString(2))
 
 const splitOctetIntoPairs = (octet) => {
   const mod = 4 // 0000 0100
-  const pairs = [
-    (octet >> 6) % mod, // shift right 6, drop everything left of mod
-    (octet >> 4) % mod,
-    (octet >> 2) % mod,
-    (octet >> 0) % mod,
-  ]
-  return pairs
+  return [0,0,0,0].map((_, i) =>
+    // shift right n, drop everything left of mod
+    (octet >> (i * 2)) % mod
+  ).reverse()
 }
-
-// console.log(splitOctetIntoPairs(0))
-// console.log(splitOctetIntoPairs(1))
-// console.log(splitOctetIntoPairs(5))
-// console.log(splitOctetIntoPairs(1 + 4 + 16 + 64))
-// console.log(splitOctetIntoPairs(
-//   128
-//   + 64
-//   + 32
-//   + 16
-//   + 8
-//   + 4
-//   + 2
-//   +1
-// ))
-// console.log(splitOctetIntoPairs(255))
 
 module.exports = {
   splitOctetIntoPairs,

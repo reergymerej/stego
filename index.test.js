@@ -25,10 +25,6 @@ describe('splitOctetIntoPairs', () => {
     ${128 + 64 + 32 + 16 + 8 + 4 + 2 + 1} | ${[3, 3, 3, 3]}
     ${128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 + 1} | ${[0, 0, 0, 0]}
   `('$input -> $output', ({ input, output }) => {
-    // 00 00 10 00
-    // 00 10 00 00 - 32
-    // 01 00 00 00 - 64
-    // 10 00 00 00 - 128
     expect(mod.splitOctetIntoPairs(input)).toEqual(output)
   })
 })
