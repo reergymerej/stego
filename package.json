@@ -222,7 +222,7 @@
     "load-json-file": "^4.0.0",
     "levn": "^0.3.0",
     "locate-path": "^3.0.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "loose-envify": "^1.4.0",
     "lodash.sortby": "^4.7.0",
     "map-cache": "^0.2.2",
