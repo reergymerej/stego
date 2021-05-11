@@ -140,7 +140,7 @@
     "http-signature": "^1.2.0",
     "has-value": "^1.0.0",
     "has-values": "^1.0.0",
-    "hosted-git-info": "^2.8.5",
+    "hosted-git-info": "^2.8.9",
     "html-encoding-sniffer": "^1.0.2",
     "iconv-lite": "^0.4.24",
     "imurmurhash": "^0.1.4",
