@@ -210,7 +210,7 @@
     "json-schema": "^0.2.3",
     "json-stringify-safe": "^5.0.1",
     "json-schema-traverse": "^0.4.1",
-    "jsdom": "^11.12.0",
+    "jsdom": "^16.5.0",
     "jsesc": "^2.5.2",
     "jsprim": "^1.4.1",
     "json-parse-better-errors": "^1.0.2",
