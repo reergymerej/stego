@@ -297,7 +297,7 @@
     "pkg-dir": "^3.0.0",
     "pretty-format": "^24.9.0",
     "process-nextick-args": "^2.0.1",
-    "qs": "^6.5.2",
+    "qs": "^6.5.3",
     "prompts": "^2.2.1",
     "pump": "^3.0.0",
     "rc": "^1.2.8",
