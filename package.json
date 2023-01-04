@@ -214,7 +214,7 @@
     "jsesc": "^2.5.2",
     "jsprim": "^1.4.1",
     "json-parse-better-errors": "^1.0.2",
-    "json5": "^2.1.1",
+    "json5": "^2.2.2",
     "kind-of": "^3.2.2",
     "kleur": "^3.0.3",
     "leven": "^3.1.0",
